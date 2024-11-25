@@ -1,4 +1,0 @@
-connector_type: mongodb
-connection_str: "mongodb://localhost:27017/" #Must be replica set and MongoVersion is higher than Mongo5.1
-database: "test"
-collection: "test"

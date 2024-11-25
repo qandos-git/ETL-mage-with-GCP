@@ -1,4 +1,0 @@
-connector_type: snowflake
-profile: default
-config:
-  table_name: table_name

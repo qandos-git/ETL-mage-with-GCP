@@ -1,1 +1,0 @@
-MEMORY_DIRECTORY = 'memory'

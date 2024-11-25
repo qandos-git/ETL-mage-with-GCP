@@ -1,1 +1,0 @@
-CUSTOM_DESIGN_FILENAME = 'design.yaml'
