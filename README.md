@@ -58,7 +58,10 @@ The pipeline extracts historical weather data weekly, ensuring an up-to-date rec
 
 ![auto](images/data-append.jpg)
 
-<br>
+<be>
+
+## Challenges
+I am facing issues building a Docker image due to version conflicts between packages. The problem occurred because I had to downgrade google-cloud-bigquery to an older version to make it compatible with the db-dtypes package. However, this downgrade caused a conflict with the mage-ai package. Although the project runs successfully in my Google Cloud virtual instance, I haven't been able to build the Docker image yet. I will keep working on resolving the issue.
 
 
 ## Run the pipeline
