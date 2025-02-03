@@ -48,6 +48,38 @@ blocks:
   upstream_blocks:
   - transform_data
   uuid: load_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - model_building
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: select training data
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: select_training_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: model building
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - select_training_data
+  uuid: model_building
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
