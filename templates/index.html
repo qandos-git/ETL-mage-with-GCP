@@ -1,69 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar", dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Outfit Advisor - Buraidah</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            margin: auto;
-        }
-        h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        .temperature {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .recommendation {
-            font-size: 18px;
-            color: #007bff;
-            margin-top: 15px;
-        }
-        .loader {
-            display: none;
-        }
-    </style>
+    <title>🌦️الجو اليوم</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
 </head>
+
 <body>
     <div class="container">
-        <h1>Weather Outfit Advisor - Buraidah</h1>
-        <p>Fetching weather data...</p>
-        <div class="loader">🌦️</div>
-        <div id="weather-info" style="display: none;">
-            <p class="temperature">Feels Like: <span id="feels-like"></span>°C</p>
-            <p class="recommendation" id="outfit-advice"></p>
-        </div>
+        <h1>🌤️ توقعات الطقس في بريدة</h1>
+        <p class="temp">درجة الحرارة الحالية: <strong>{{ current_temp }}°C</strong></p>
+        <p>الإحساس الحراري المتوقع: <strong>{{ feels_like }}°C</strong></p>
+        <p>💡 نصيحة الملابس: <strong>{{ recommendation }}</strong></p>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("/predict")
-                .then(response => response.json())
-                .then(data => {
-                    document.querySelector(".loader").style.display = "none";
-                    document.getElementById("weather-info").style.display = "block";
-                    document.getElementById("feels-like").textContent = data.predicted_feels_like;
-                    document.getElementById("outfit-advice").textContent = data.recommendation;
-                })
-                .catch(error => {
-                    document.querySelector(".loader").textContent = "❌ Error loading data";
-                });
-        });
-    </script>
 </body>
 </html>

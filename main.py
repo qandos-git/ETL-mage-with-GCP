@@ -1,15 +1,9 @@
-import pandas as pd
 from flask import Flask, render_template, request, jsonify
 import requests
-from pydantic import BaseModel
 import pickle
+import json
+from apscheduler.schedulers.background import BackgroundScheduler
 
-class Example(BaseModel):
-    temp: float
-    min_temp: float
-    max_temp: float
-    temp_range: float
-    
     
 with open('models/model_v0.pkl', 'rb') as m:
     model = pickle.load(m)
@@ -26,27 +20,44 @@ LOCATION_PARAMS = {
     "timezone": "Asia/Riyadh"
 }
 
+DATA_FILE = "weather_data.json"
+
+def fetch_and_store_weather():
+    """Fetches daily weather data from API and saves it to a file."""
+    response = requests.get(WEATHER_API_URL, params=LOCATION_PARAMS)
+    if response.status_code == 200:
+        with open(DATA_FILE, "w") as f:
+            json.dump(response.json(), f)
+
+# Run fetch function every day
+scheduler = BackgroundScheduler()
+scheduler.add_job(fetch_and_store_weather, "cron", hour=0, minute=0)
+scheduler.start()
+
+def get_stored_weather():
+    try:
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
 def get_outfit_recommendation(feels_like):
     if feels_like < 10:
-        return "It's really cold! Wear a heavy jacket, scarf, and gloves."
+        return "الجو بارد جدًا، تدحمل"
     elif 10 <= feels_like < 20:
-        return "Cool weather! A light jacket or hoodie is a good choice."
+        return "الجو بارد قليلًا ومناسب للكشتات"
     elif 20 <= feels_like < 30:
-        return "Warm but comfortable. T-shirt and jeans work well."
+        return "جو لطيف مناسب للحدائق."
     else:
-        return "Hot weather! Wear light, breathable clothes and stay hydrated."
+        return "🔥"
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    """Reads stored weather data and predicts feels_like."""
+    data = get_stored_weather()
+    if not data:
+        return jsonify({"error": "No weather data available"}), 500
 
-@app.route("/predict", methods=["GET"])
-def get_weather_prediction():
-    response = requests.get(WEATHER_API_URL, params=LOCATION_PARAMS)
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to fetch weather data"}), 500
-    
-    data = response.json()
     current_temp = data["current"]["temperature_2m"]
     min_temp = data["daily"]["temperature_2m_min"][0]
     max_temp = data["daily"]["temperature_2m_max"][0]
@@ -54,13 +65,15 @@ def get_weather_prediction():
 
     # Predict feels_like temperature
     model_input = [[current_temp, min_temp, max_temp, temp_range]]
-    feels_like_pred = model.predict(model_input)[0]
+    feels_like_pred = round(model.predict(model_input)[0])
 
-    return jsonify({
-        "current_temp": current_temp,
-        "predicted_feels_like": feels_like_pred,
-        "recommendation": get_outfit_recommendation(feels_like_pred)
-    })
+    return render_template(
+        "index.html",
+        current_temp= current_temp,
+        feels_like =feels_like_pred,
+        recommendation=get_outfit_recommendation(feels_like_pred)
+    )
 
 if __name__ == "__main__":
+    fetch_and_store_weather()  # Fetch data initially
     app.run(debug=True)
