@@ -138,5 +138,5 @@ spark_config: {}
 tags: []
 type: python
 uuid: weather_data
-variables_dir: /home/nooramerq0/.mage_data/weather-data-pipeline
+variables_dir: C:\Users\fa-yy/.mage_data\ETL-mage-with-GCP
 widgets: []

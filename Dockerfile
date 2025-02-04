@@ -1,13 +1,25 @@
-FROM python:3.11.2-slim
+# Use the latest stable Python version with a lightweight base image
+FROM python:3.11-slim-bookworm
 
-COPY . /app/
+# Allow statements and log messages to appear immediately
+ENV PYTHONUNBUFFERED True
 
-WORKDIR /app
+# Set up the working directory
+ENV APP_HOME /back-end
+WORKDIR $APP_HOME
 
-RUN apt-get update && apt-get install -y libpq-dev build-essential
+# Copy only required files first to optimize caching
+COPY requirements.txt ./
 
-RUN pip install  -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 6789
+# Copy the rest of the application code
+COPY . ./
 
-CMD ["mage", "start", "data-pipeline-project"]
+# Expose the default Cloud Run port
+EXPOSE 8080
+
+# Start the Gunicorn server
+CMD exec gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 1 --threads 8 --timeout 0 app:app

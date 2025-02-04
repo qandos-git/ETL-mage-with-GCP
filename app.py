@@ -3,12 +3,12 @@ import requests
 import pickle
 import json
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask_cors import CORS
+import os
 
-    
-with open('models/model_v0.pkl', 'rb') as m:
-    model = pickle.load(m)
 
 app = Flask(__name__)
+CORS(app)
 
 # Weather API details
 WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast"
@@ -21,6 +21,10 @@ LOCATION_PARAMS = {
 }
 
 DATA_FILE = "weather_data.json"
+
+with open('models/model_v0.pkl', 'rb') as m:
+    model = pickle.load(m)
+
 
 def fetch_and_store_weather():
     """Fetches daily weather data from API and saves it to a file."""
@@ -43,13 +47,17 @@ def get_stored_weather():
 
 def get_outfit_recommendation(feels_like):
     if feels_like < 10:
-        return "الجو بارد جدًا، تدحمل"
+        return "الجو بارد جدًا"
     elif 10 <= feels_like < 20:
-        return "الجو بارد قليلًا ومناسب للكشتات"
+        return "الجو بارد قليلًا، جو كشتة"
     elif 20 <= feels_like < 30:
-        return "جو لطيف مناسب للحدائق."
+        return "جو لطيف."
     else:
         return "🔥"
+
+# Configure FLASK_DEBUG from environment variable
+app.config['DEBUG'] = os.environ.get('FLASK_DEBUG')
+
 
 @app.route("/")
 def home():
