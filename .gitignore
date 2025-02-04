@@ -2,3 +2,4 @@ venv/
 data-pipeline-project/io_config.yaml
 data-pipeline-project/__pycache__
 
+.file_versions

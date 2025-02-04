@@ -1,18 +1,80 @@
 <!DOCTYPE html>
-<html lang="ar", dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌦️الجو اليوم</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
+    <title>🌦️ الجو اليوم</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <h1>🌤️ توقعات الطقس في بريدة</h1>
-        <p class="temp">درجة الحرارة الحالية: <strong>{{ current_temp }}°C</strong></p>
-        <p>الإحساس الحراري المتوقع: <strong>{{ feels_like }}°C</strong></p>
-        <p>💡 نصيحة الملابس: <strong>{{ recommendation }}</strong></p>
+
+        <div class="weather-card">
+            <p class="temp">🌡️ درجة الحرارة الحالية: <strong>{{ current_temp }}°C</strong></p>
+            <p>🔥 الإحساس الحراري المتوقع: <strong>{{ feels_like }}°C</strong></p>
+            <p>💡 <span class="advice">{{ recommendation }}</span></p>
+        </div>
+
+        <div class="explanation">
+            <h2>🤔 وش معنى "الإحساس الحراري"؟</h2>
+            <p>
+                الإحساس الحراري هو وش تحس به فعلًا، مو بس كم درجة الحرارة الفعلية.
+                يعني لو فيه رطوبة عالية أو هوا قوي، ممكن تحس إن الجو أحر أو أبرد من الرقم اللي تشوفه.
+                النموذج اللي عندنا يستخدم كم عامل مثل درجة الحرارة الحالية، أعلى وأقل درجة خلال اليوم، وبعد يحسب فرق الحرارة عشان يعطيك إحساس واقعي أكثر.
+            </p>
+        </div>
+
+        <div class="test-model">
+            <h2>🛠️ جرب النموذج بنفسك!</h2>
+            <form id="testForm">
+                <div class="input-group">
+                    <label for="temp">🌡️ درجة الحرارة الحالية:</label>
+                    <input type="number" id="temp" required> °C
+                </div>
+
+                <div class="input-group">
+                    <label for="temp_min">❄️ أقل درجة اليوم:</label>
+                    <input type="number" id="temp_min" required> °C
+                </div>
+
+                <div class="input-group">
+                    <label for="temp_max">🔥 أعلى درجة اليوم:</label>
+                    <input type="number" id="temp_max" required> °C
+                </div>
+
+                <button type="submit">🔍 توقع الإحساس الحراري</button>
+            </form>
+
+            <p id="testResult"></p>
+        </div>
     </div>
+
+    <script>
+        document.getElementById("testForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let temp = document.getElementById("temp").value;
+            let temp_min = document.getElementById("temp_min").value;
+            let temp_max = document.getElementById("temp_max").value;
+            let temp_range = temp_max - temp_min;
+
+            fetch("/test_model", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ temp: temp, temp_min: temp_min, temp_max: temp_max, temp_range: temp_range })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("testResult").innerHTML =
+                    `الإحساس الحراري المتوقع: <strong>${data.feels_like}°C</strong> <br> 💡 النصيحة: <strong>${data.recommendation}</strong>`;
+            })
+            .catch(error => {
+                document.getElementById("testResult").textContent = "❌ صار خطأ، جرب مرة ثانية!";
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 import pandas as pd
 import hashlib
 from google.cloud import storage
+import os
 
-BUCKET_NAME = "status-0"
 HASH_FILE_NAME = "data_hash.txt"  # File storing old hash
 
 def hash_dataframe(df):
@@ -11,27 +11,18 @@ def hash_dataframe(df):
 
 
 
-def get_old_hash():
-    """Retrieve old hash value from Google Cloud Storage."""
-    client = storage.Client()
 
-    bucket = client.bucket(BUCKET_NAME)
-
-    blob = bucket.blob(HASH_FILE_NAME)
-    if blob.exists():
-        return blob.download_as_text().strip()
-
-    return None  # First-time run, no old hash
+def get_old_hash(filename="hash.txt"):
+    """Retrieve old hash value from a local file."""
+    try:
+        with open(filename, "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return None  # First-time run, no old hash
 
 
-def save_new_hash(new_hash):
-    """Save the new hash value to Google Cloud Storage after training."""
-    client = storage.Client()
-    bucket = client.bucket(BUCKET_NAME)
-    blob = bucket.blob(HASH_FILE_NAME)
-    blob.upload_from_string(new_hash)
-    blob = bucket.blob(HASH_FILE_NAME)
-    blob.upload_from_string(new_hash)
-
-
+def save_new_hash(new_hash, filename="hash.txt"):
+    """Save the new hash value to a local file."""
+    with open(filename, "w") as f:
+        f.write(new_hash)
 

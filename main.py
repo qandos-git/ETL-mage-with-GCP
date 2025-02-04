@@ -74,6 +74,27 @@ def home():
         recommendation=get_outfit_recommendation(feels_like_pred)
     )
 
+@app.route("/test_model", methods=["POST"])
+def test_model():
+    """Allows users to test the model with their own inputs."""
+    data = request.json
+    try:
+        temp = float(data["temp"])
+        temp_min = float(data["temp_min"])
+        temp_max = float(data["temp_max"])
+        temp_range = float(data["temp_range"])
+
+        model_input = [[temp, temp_min, temp_max, temp_range]]
+        feels_like_pred = round(model.predict(model_input)[0])
+
+        return jsonify({
+            "feels_like": feels_like_pred,
+            "recommendation": get_outfit_recommendation(feels_like_pred)
+        })
+    except (KeyError, ValueError):
+        return jsonify({"error": "⚠️ مدخلات غير صحيحة، تأكد من القيم المدخلة!"}), 400
+
+
 if __name__ == "__main__":
     fetch_and_store_weather()  # Fetch data initially
     app.run(debug=True)
