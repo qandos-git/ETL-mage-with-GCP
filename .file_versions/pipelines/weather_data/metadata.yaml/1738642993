@@ -35,8 +35,7 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks:
-  - save_status
+  downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -53,41 +52,24 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
-  - check_hash
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: save status
-  retry_config: null
-  status: updated
-  timeout: null
-  type: data_loader
-  upstream_blocks:
-  - load_data
-  uuid: save_status
-- all_upstream_blocks_executed: false
-  color: null
-  configuration: {}
-  downstream_blocks:
   - extract_dataset
+  - save_status
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: check hash
+  name: more data
   retry_config: null
   status: updated
   timeout: null
   type: sensor
-  upstream_blocks:
-  - save_status
-  uuid: check_hash
+  upstream_blocks: []
+  uuid: more_data
 - all_upstream_blocks_executed: false
   color: null
   configuration:
     file_path: data_loaders\extract_dataset.py
-    file_source:
+    file_source: &id001
       path: data_loaders\extract_dataset.py
   downstream_blocks:
   - build_model
@@ -101,8 +83,27 @@ blocks:
   timeout: null
   type: data_loader
   upstream_blocks:
-  - check_hash
+  - more_data
   uuid: extract_dataset
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_path: data_loaders\extract_dataset.py
+    file_source: *id001
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: save status
+  replicated_block: extract_dataset
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_loader
+  upstream_blocks:
+  - more_data
+  uuid: save_status
 - all_upstream_blocks_executed: false
   color: null
   configuration:
@@ -116,7 +117,7 @@ blocks:
   language: python
   name: build model
   retry_config: null
-  status: updated
+  status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:

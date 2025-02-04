@@ -36,7 +36,7 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
-  - save_status
+  - more_data
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -52,76 +52,51 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks:
-  - check_hash
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: save status
-  retry_config: null
-  status: updated
-  timeout: null
-  type: data_loader
-  upstream_blocks:
-  - load_data
-  uuid: save_status
-- all_upstream_blocks_executed: false
-  color: null
-  configuration: {}
-  downstream_blocks:
-  - extract_dataset
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: check hash
-  retry_config: null
-  status: updated
-  timeout: null
-  type: sensor
-  upstream_blocks:
-  - save_status
-  uuid: check_hash
-- all_upstream_blocks_executed: false
-  color: null
-  configuration:
-    file_path: data_loaders\extract_dataset.py
-    file_source:
-      path: data_loaders\extract_dataset.py
-  downstream_blocks:
-  - build_model
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: extract dataset
-  retry_config: null
-  status: executed
-  timeout: null
-  type: data_loader
-  upstream_blocks:
-  - check_hash
-  uuid: extract_dataset
-- all_upstream_blocks_executed: false
-  color: null
-  configuration:
-    file_path: data_exporters\build_model.py
-    file_source:
-      path: data_exporters\build_model.py
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: build model
+  name: more data
   retry_config: null
-  status: updated
+  status: not_executed
+  timeout: null
+  type: sensor
+  upstream_blocks:
+  - load_data
+  uuid: more_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - model_building
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: select training data
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: select_training_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: model building
+  retry_config: null
+  status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
-  - extract_dataset
-  uuid: build_model
+  - select_training_data
+  uuid: model_building
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}

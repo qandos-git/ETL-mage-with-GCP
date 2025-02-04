@@ -69,8 +69,7 @@ blocks:
 - all_upstream_blocks_executed: false
   color: null
   configuration: {}
-  downstream_blocks:
-  - extract_dataset
+  downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -83,7 +82,7 @@ blocks:
   upstream_blocks:
   - save_status
   uuid: check_hash
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration:
     file_path: data_loaders\extract_dataset.py
@@ -100,10 +99,9 @@ blocks:
   status: executed
   timeout: null
   type: data_loader
-  upstream_blocks:
-  - check_hash
+  upstream_blocks: []
   uuid: extract_dataset
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration:
     file_path: data_exporters\build_model.py
@@ -116,7 +114,7 @@ blocks:
   language: python
   name: build model
   retry_config: null
-  status: updated
+  status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:

@@ -1,0 +1,6 @@
+import pandas as pd
+import hashlib
+
+def hash_dataframe(df):
+    """Generate a hash for a dataframe"""
+    return hashlib.md5(pd.util.hash_pandas_object(df, index=True).values).hexdigest()
