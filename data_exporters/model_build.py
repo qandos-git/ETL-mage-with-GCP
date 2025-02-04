@@ -63,6 +63,6 @@ def export_data(data, *args, **kwargs):
     print('training r2:',  score_model(model, X_train, y_train))
     print('testing r2:', score_model(model, X_test, y_test))
 
-    filename = 'data-pipeline-project/models/model_v0.pkl'
+    filename = 'models/model_v0.pkl'
     print(f'Saving model to {filename}')
     pickle.dump(model, open(filename, 'wb'))
