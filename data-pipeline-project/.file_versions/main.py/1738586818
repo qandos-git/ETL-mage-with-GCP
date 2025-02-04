@@ -1,0 +1,39 @@
+from flask import Flask, render_template, request
+import os
+from pydantic import BaseModel
+
+class Example(BaseModel):
+    temp: float
+    min_temp: float
+    max_temp: float
+    temp_range: float
+    
+    
+with open('models/model_v0.pkl', 'rb') as m:
+    model = pickle.load(m)
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template('chat.html')
+
+def predict_example(x: Example):
+    df = pd.DataFrame([x.dict()])
+    df = processor.transform(df)
+    yhat = model.predict(df)
+    return {"result": yhat[0]}
+
+def get_outfit_recommendation(feels_like):
+    if feels_like < 10:
+        return "It's really cold! Wear a heavy jacket, scarf, and gloves."
+    elif 10 <= feels_like < 20:
+        return "Cool weather! A light jacket or hoodie is a good choice."
+    elif 20 <= feels_like < 30:
+        return "Warm but comfortable. T-shirt and jeans work well."
+    else:
+        return "Hot weather! Wear light, breathable clothes and stay hydrated."
+
+
+if __name__ == '__main__':
+    app.run()

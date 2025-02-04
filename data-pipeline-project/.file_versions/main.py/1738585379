@@ -1,0 +1,37 @@
+import random
+import joblib
+import keras
+from preprocessing import clean_up_sentence
+from keras.preprocessing.sequence import pad_sequences
+from flask import Flask, render_template, request
+
+# loading pickled objects
+encoder = joblib.load("pickles/encoder.pkl")
+responses = joblib.load("pickles/responses.pkl")
+tokenizer = joblib.load("pickles/tokensizer.pkl")
+#load model
+model = keras.models.load_model('models/store_bot_0.h5')
+
+sequence_max_length = 5
+
+
+
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template('chat.html')
+
+
+@app.route("/get", methods=["GET", "POST"])
+def chat():
+    msg = request.form["msg"]
+    input = msg
+    return get_Chat_response(input)
+
+
+
+
+if __name__ == '__main__':
+    app.run()

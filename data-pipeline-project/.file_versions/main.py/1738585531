@@ -1,0 +1,21 @@
+from flask import Flask, render_template, request
+import os
+
+class Example(BaseModel):
+    temp: float
+    temp_range: float
+    min_temp: float
+    max_temp: float
+    
+with open(f'{os.cwd()}/model.pkl', 'rb') as m:
+    model = pickle.load(m)
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template('chat.html')
+
+
+if __name__ == '__main__':
+    app.run()

@@ -1,0 +1,27 @@
+from flask import Flask, render_template, request
+import os
+
+class Example(BaseModel):
+    temp: float
+    min_temp: float
+    max_temp: float
+    temp_range: float
+    
+    
+with open(f'{os.cwd()}/model.pkl', 'rb') as m:
+    model = pickle.load(m)
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template('chat.html')
+
+def predict_example(x: Example):
+    df = pd.DataFrame([x.dict()])
+    df = processor.transform(df)
+    yhat = model.predict(df)
+    return {"result": yhat[0]}
+
+if __name__ == '__main__':
+    app.run()

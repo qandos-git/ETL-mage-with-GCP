@@ -1,0 +1,38 @@
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge
+from sklearn.metrics import r2_score
+
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
+
+
+@data_exporter
+def export_data(data, *args, **kwargs):
+    """
+    Exports data to some source.
+
+    Args:
+        data: The output from the upstream parent block
+        args: The output from any additional upstream blocks (if applicable)
+
+    Output (optional):
+        Optionally return any object and it'll be logged and
+        displayed when inspecting the block run.
+    """
+    y = data['feels_like']
+    X = data.drop(columns=['feels_like', 'date_time','day_of_week'])
+    X_train, X_test, y_train ,y_test = train_test_split(X,y, test_size=0.2, random_state=42)
+
+    pipe = Pipeline([
+        ('StanderScaler', StandardScaler()),
+        ('regressor', Ridge())
+    ])
+
+    pipe.fit(X_train, y_train)
+    train_pred = pipe.predict(X_train)
+    test_pred = pipe.predict(X_test)
+    print('training r2:', r2_score(train_pred, y_train))
+    print('testing r2:', r2_score(test_pred, y_t))

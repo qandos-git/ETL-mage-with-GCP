@@ -1,0 +1,59 @@
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge
+from sklearn.metrics import r2_score
+
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
+
+
+LABEL_COLUMN = "feels_like"
+
+def build_training_and_test_set(df: DataFrame):
+    """Splits the dataset into training and testing sets."""
+    X = df.drop(columns=[LABEL_COLUMN, "date_time", "day_of_week"])
+    y = df[LABEL_COLUMN]
+    
+    return train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+def train_model(X_train, y_train):
+    """Trains a Ridge regression model with a standardized pipeline."""
+    pipe = Pipeline([
+        ("StandardScaler", StandardScaler()),
+        ("regressor", Ridge())
+    ])
+    
+    pipe.fit(X_train, y_train)
+    return pipe
+
+
+def score_model(model, X, y):
+    """Evaluates the model using R² score."""
+    y_pred = model.predict(X)
+    return r2_score(y, y_pred)
+
+@data_exporter
+def export_data(data, *args, **kwargs):
+    """
+    Exports data to some source.
+
+    Args:
+        data: The output from the upstream parent block
+        args: The output from any additional upstream blocks (if applicable)
+
+    Output (optional):
+        Optionally return any object and it'll be logged and
+        displayed when inspecting the block run.
+    """
+    
+    X_train, X_test, y_train, y_test = build_training_and_test_set(data)
+    
+    model = train_model(X_train, y_train)
+
+
+    print('training r2:',  score_model(model, X_train, y_train)
+)
+    print('testing r2:', r2_score(test_pred, y_test))
