@@ -1,10 +1,6 @@
 # End to End Machine learning System
 ### System Architecture
-
-<be>
-![System Architecture]()
-
-<be>
+https://github.com/qandos-git/end-to-end-machine-learning-system/blob/main/images/System%20Architecture%20.png
 
 ## Overview
 
