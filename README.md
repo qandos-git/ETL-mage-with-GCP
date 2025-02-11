@@ -2,6 +2,8 @@
 ### System Architecture
 https://github.com/qandos-git/end-to-end-machine-learning-system/blob/main/images/System%20Architecture%20.png
 
+### Youtube Explanation in Arabic
+[Project details explained](https://youtu.be/J4ckFJxWDaU)
 ## Overview
 
 This project builds an automated end-to-end machine-learning pipeline, the goal of this automation is to deploy a new model whenever there is new data and make it available for the user.
